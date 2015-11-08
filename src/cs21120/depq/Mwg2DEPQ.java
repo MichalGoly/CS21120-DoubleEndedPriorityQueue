@@ -54,7 +54,11 @@ public class Mwg2DEPQ implements DEPQ {
 
    @Override
    public void add(Comparable c) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if (heapSize == 0) {
+         intervalHeap[0] = new Interval(c, c);
+         heapSize++;
+         elementsNumber++;
+      } 
    }
 
    @Override
@@ -69,12 +73,12 @@ public class Mwg2DEPQ implements DEPQ {
 
    @Override
    public boolean isEmpty() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return elementsNumber == 0;
    }
 
    @Override
    public int size() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return elementsNumber;
    }
    
    private class Interval {
@@ -87,6 +91,13 @@ public class Mwg2DEPQ implements DEPQ {
       public Interval(Comparable leftNode, Comparable rightNode) {
          this.leftNode = leftNode;
          this.rightNode = rightNode;
+         
+         if (leftNode == null) {
+            this.leftNode = rightNode;
+         }
+         if (rightNode == null) {
+            this.rightNode = leftNode;
+         }
       }
 
       public void setLeftNode(Comparable leftNode) {
