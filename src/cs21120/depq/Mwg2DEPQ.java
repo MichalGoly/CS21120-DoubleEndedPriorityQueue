@@ -5,25 +5,35 @@ package cs21120.depq;
  * @author Michal Goly
  */
 public class Mwg2DEPQ implements DEPQ {
-   
-   private Interval[] intervalHeap;
+
+   private Interval[] heap;
    private int size;
-   
+   private int nodes;
+
    public Mwg2DEPQ() {
-      intervalHeap = new Interval[500];
+      heap = new Interval[500];
       size = 0;
+      nodes = 0;
    }
-   
+
    @Override
    public Comparable inspectLeast() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+      if (size == 0) {
+         return null;
+      } else {
+         Interval root = heap[0];
+         return root.left;
+      }
    }
 
    @Override
    public Comparable inspectMost() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+      if (size == 0) {
+         return null;
+      } else {
+         Interval root = heap[0];
+         return root.right;
+      }
    }
 
    @Override
@@ -51,15 +61,23 @@ public class Mwg2DEPQ implements DEPQ {
    public int size() {
       return size;
    }
-   
+
+   private void expand() {
+      Interval[] newHeap = new Interval[heap.length * 2];
+      System.arraycopy(heap, 0, newHeap, 0, heap.length);
+      heap = newHeap;
+   }
+
    private class Interval {
-      
+
       private Comparable left;
       private Comparable right;
-      
-      public Interval() {
+
+      public Interval(Comparable left, Comparable right) {
+         this.left = left;
+         this.right = right;
       }
-      
+
    }
 
 }
