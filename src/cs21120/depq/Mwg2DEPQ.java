@@ -8,12 +8,10 @@ public class Mwg2DEPQ implements DEPQ {
 
    private Interval[] heap;
    private int size;
-   private int nodes;
 
    public Mwg2DEPQ() {
-      heap = new Interval[500];
+      heap = new Interval[1000];
       size = 0;
-      nodes = 0;
    }
 
    @Override
@@ -38,8 +36,27 @@ public class Mwg2DEPQ implements DEPQ {
 
    @Override
    public void add(Comparable c) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if (size == heap.length) {
+         expand();
+      }
 
+      if (size == 0) {
+         heap[0] = new Interval(c, c);
+      } else if (size == 1) {
+         if (c.compareTo(heap[0].left) < 0) {
+            heap[0].left = c;
+         } else {
+            heap[0].right = c;
+         }
+      } else {
+         // size >= 2
+         if (size % 2 == 0) {
+            
+         } else {
+            
+         }
+      }
+      size++;
    }
 
    @Override
