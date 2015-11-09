@@ -55,7 +55,12 @@ public class Mwg2DEPQ implements DEPQ {
          if (size % 2 == 0) {
             int newNodeIndex = (size / 2) + (size % 2);
             int parentIndex = (newNodeIndex - 1) / 2;
-
+            
+            // initialize placeholder for that index in the array if used 1st time
+            if (heap[newNodeIndex] == null) {
+               heap[newNodeIndex] = new Interval();
+            }
+            
             // if c < parent.left
             if (c.compareTo(heap[parentIndex].getLeft()) < 0) {
                minHeapInsert(c, newNodeIndex);
@@ -109,33 +114,26 @@ public class Mwg2DEPQ implements DEPQ {
    private void minHeapInsert(Comparable c, int lastNodeIndex) {
 
       int index = lastNodeIndex;
-      while (index != 0) {
-
+      while (index != 0 && c.compareTo(heap[(index - 1) / 2].getLeft()) < 0) {
          int parent = (index - 1) / 2;
-
-         if (c.compareTo(heap[parent].getLeft()) < 0) {
-            // move parent.left down (explicitly) and c up (implicitly)
-            heap[index].setLeft(heap[parent].getLeft());
-         }
+         
+         // move parent.left down (explicitly) and c up (implicitly)
+         heap[index].setLeft(heap[parent].getLeft());
          index = parent;
       }
 
-      heap[lastNodeIndex].setLeft(c);
+      heap[index].setLeft(c);
       size++;
    }
-   // TODO index and lastNodeIndex should be changed to work properly
-   // heap insert methods need re-writing due to bug 
+
    private void maxHeapInsert(Comparable c, int lastNodeIndex) {
 
       int index = lastNodeIndex;
-      while (index != 0) {
-         
+      while (index != 0 && c.compareTo(heap[(index - 1) / 2].getRight()) > 0) {
          int parent = (index - 1) / 2;
 
-         if (c.compareTo(heap[parent].getRight()) > 0) {
-            // move parent.right down (explicitly) and c up (implicitly)
-            heap[index].setRight(heap[parent].getRight());
-         }
+         // move parent.right down (explicitly) and c up (implicitly)
+         heap[index].setRight(heap[parent].getRight());
          index = parent;
       }
 
