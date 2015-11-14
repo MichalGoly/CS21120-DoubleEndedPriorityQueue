@@ -55,12 +55,12 @@ public class Mwg2DEPQ implements DEPQ {
          if (size % 2 == 0) {
             int newNodeIndex = (size / 2) + (size % 2);
             int parentIndex = (newNodeIndex - 1) / 2;
-            
+
             // initialize placeholder for that index in the array if used 1st time
             if (heap[newNodeIndex] == null) {
                heap[newNodeIndex] = new Interval();
             }
-            
+
             // if c < parent.left
             if (c.compareTo(heap[parentIndex].getLeft()) < 0) {
                minHeapInsert(c, newNodeIndex);
@@ -87,12 +87,54 @@ public class Mwg2DEPQ implements DEPQ {
 
    @Override
    public Comparable getLeast() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      Comparable result = null;
+
+      if (isEmpty()) {
+         return result;
+      } else if (size == 1) {
+         result = heap[0].getLeft();
+
+         heap[0] = null;
+         size--;
+
+         return result;
+      } else {
+         result = heap[0].getLeft();
+
+         int lastNodeIndex = (size / 2) + (size % 2) - 1;
+         if (lastNodeIndex == 0) {
+            // only root Interval exists
+            heap[0].setLeft(heap[0].getRight());
+            size--;
+            return result;
+         }
+
+         // fix heap & start by moving the last element.left to the node.left
+         heap[0].setLeft(heap[lastNodeIndex].getLeft());
+
+         if (size % 2 == 0) {
+            heap[lastNodeIndex].setLeft(heap[lastNodeIndex].getRight());
+            size--;
+
+            fixHeap(lastNodeIndex);
+         } else {
+            heap[lastNodeIndex] = null;
+            size--;
+            lastNodeIndex--;
+
+            fixHeap(lastNodeIndex);
+         }
+         return result;
+      }
    }
 
    @Override
    public Comparable getMost() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if (isEmpty()) {
+         return null;
+      }
+
+      return null;
    }
 
    @Override
@@ -116,7 +158,7 @@ public class Mwg2DEPQ implements DEPQ {
       int index = lastNodeIndex;
       while (index != 0 && c.compareTo(heap[(index - 1) / 2].getLeft()) < 0) {
          int parent = (index - 1) / 2;
-         
+
          // move parent.left down (explicitly) and c up (implicitly)
          heap[index].setLeft(heap[parent].getLeft());
          index = parent;
@@ -139,6 +181,54 @@ public class Mwg2DEPQ implements DEPQ {
 
       heap[index].setRight(c);
       size++;
+   }
+   
+   // pseudo code in orange notepad(reverse) page 5
+   private void fixHeap(int lastNodeIndex) {
+      int currentNode = 0;
+      int smallerChildNode;
+      while (currentNode <= lastNodeIndex) {
+
+         // compare left and right and swap if left > right
+         if (currentNode < lastNodeIndex) {
+            if (heap[currentNode].getLeft()
+                    .compareTo(heap[currentNode].getRight()) > 0) {
+               // swap
+               Comparable temp = heap[currentNode].getLeft();
+               heap[currentNode].setLeft(heap[currentNode].getRight());
+               heap[currentNode].setRight(temp);
+            }
+         }
+
+         // find smaller child
+         int leftChildNode = currentNode * 2 + 1;
+         int rightChildNode = currentNode * 2 + 2;
+
+         // stop if there are no children
+         if (rightChildNode > lastNodeIndex) {
+            break;
+         }
+
+         if (heap[leftChildNode].getLeft()
+                 .compareTo(heap[rightChildNode].getLeft()) <= 0) {
+            smallerChildNode = leftChildNode;
+         } else {
+            smallerChildNode = rightChildNode;
+         }
+
+         // compare current.left with smaller.left
+         if (heap[currentNode].getLeft()
+                 .compareTo(heap[smallerChildNode].getLeft()) > 0) {
+            // swap
+            Comparable temp = heap[currentNode].getLeft();
+            heap[currentNode].setLeft(heap[smallerChildNode].getLeft());
+            heap[smallerChildNode].setLeft(temp);
+         } else {
+            break;
+         }
+
+         currentNode = smallerChildNode;
+      }
    }
 
    private class Interval {
