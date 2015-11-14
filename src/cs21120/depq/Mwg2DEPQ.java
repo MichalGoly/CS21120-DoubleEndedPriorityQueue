@@ -109,20 +109,20 @@ public class Mwg2DEPQ implements DEPQ {
             return result;
          }
 
-         // fix heap & start by moving the last element.left to the node.left
+         // fix heap & start by moving the last element.left to the root.left
          heap[0].setLeft(heap[lastNodeIndex].getLeft());
 
          if (size % 2 == 0) {
             heap[lastNodeIndex].setLeft(heap[lastNodeIndex].getRight());
             size--;
 
-            fixHeap(lastNodeIndex);
+            fixMinHeap(lastNodeIndex);
          } else {
             heap[lastNodeIndex] = null;
             size--;
             lastNodeIndex--;
 
-            fixHeap(lastNodeIndex);
+            fixMinHeap(lastNodeIndex);
          }
          return result;
       }
@@ -130,11 +130,46 @@ public class Mwg2DEPQ implements DEPQ {
 
    @Override
    public Comparable getMost() {
+      Comparable result = null;
+
       if (isEmpty()) {
          return null;
+      } else if (size == 1) {
+         result = heap[0].getLeft();
+
+         heap[0] = null;
+         size--;
+
+         return result;
+      } else {
+         result = heap[0].getRight();
+
+         int lastNodeIndex = (size / 2) + (size % 2) - 1;
+         if (lastNodeIndex == 0) {
+            // only root Interval exists
+            heap[0].setRight(heap[0].getLeft());
+            size--;
+            return result;
+         }
+
+         // fix heap & start by moving the last element.right to the root.right
+         heap[0].setRight(heap[lastNodeIndex].getRight());
+
+         if (size % 2 == 0) {
+            heap[lastNodeIndex].setRight(heap[lastNodeIndex].getLeft());
+            size--;
+
+            fixMaxHeap(lastNodeIndex);
+         } else {
+            heap[lastNodeIndex] = null;
+            size--;
+            lastNodeIndex--;
+
+            fixMaxHeap(lastNodeIndex);
+         }
       }
 
-      return null;
+      return result;
    }
 
    @Override
@@ -182,9 +217,9 @@ public class Mwg2DEPQ implements DEPQ {
       heap[index].setRight(c);
       size++;
    }
-   
+
    // pseudo code in orange notepad(reverse) page 5
-   private void fixHeap(int lastNodeIndex) {
+   private void fixMinHeap(int lastNodeIndex) {
       int currentNode = 0;
       int smallerChildNode;
       while (currentNode <= lastNodeIndex) {
@@ -228,6 +263,54 @@ public class Mwg2DEPQ implements DEPQ {
          }
 
          currentNode = smallerChildNode;
+      }
+   }
+
+   private void fixMaxHeap(int lastNodeIndex) {
+      int currentNode = 0;
+      int largerChildNode;
+      while (currentNode <= lastNodeIndex) {
+
+         // compare left and right and swap if left > right
+         if (currentNode < lastNodeIndex) {
+            if (heap[currentNode].getLeft()
+                    .compareTo(heap[currentNode].getRight()) > 0) {
+               // swap
+               Comparable temp = heap[currentNode].getLeft();
+               heap[currentNode].setLeft(heap[currentNode].getRight());
+               heap[currentNode].setRight(temp);
+            }
+         }
+
+         // find smaller child
+         int leftChildNode = currentNode * 2 + 1;
+         int rightChildNode = currentNode * 2 + 2;
+
+         // stop if there are no children
+         if (rightChildNode > lastNodeIndex) {
+            break;
+         }
+         
+         // possible bug place try >=
+         if (heap[leftChildNode].getRight()
+                 .compareTo(heap[rightChildNode].getRight()) > 0) {
+            largerChildNode = leftChildNode;
+         } else {
+            largerChildNode = rightChildNode;
+         }
+
+         // compare current.right with larger.right
+         if (heap[currentNode].getRight()
+                 .compareTo(heap[largerChildNode].getRight()) < 0) {
+            // swap
+            Comparable temp = heap[currentNode].getRight();
+            heap[currentNode].setRight(heap[largerChildNode].getRight());
+            heap[largerChildNode].setRight(temp);
+         } else {
+            break;
+         }
+
+         currentNode = largerChildNode;
       }
    }
 
