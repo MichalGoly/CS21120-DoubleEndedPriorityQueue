@@ -9,11 +9,18 @@ public class Mwg2DEPQ implements DEPQ {
    private Interval[] heap;
    private int size;
 
+   /**
+    *
+    */
    public Mwg2DEPQ() {
       heap = new Interval[1000];
       size = 0;
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public Comparable inspectLeast() {
       if (size == 0) {
@@ -24,6 +31,10 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public Comparable inspectMost() {
       if (size == 0) {
@@ -34,6 +45,10 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /**
+    *
+    * @param c
+    */
    @Override
    public void add(Comparable c) {
       if (size == heap.length) {
@@ -85,6 +100,10 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public Comparable getLeast() {
       Comparable result = null;
@@ -128,12 +147,16 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public Comparable getMost() {
       Comparable result = null;
 
       if (isEmpty()) {
-         return null;
+         return result;
       } else if (size == 1) {
          result = heap[0].getLeft();
 
@@ -172,22 +195,38 @@ public class Mwg2DEPQ implements DEPQ {
       return result;
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public boolean isEmpty() {
       return size == 0;
    }
 
+   /**
+    *
+    * @return
+    */
    @Override
    public int size() {
       return size;
    }
 
+   /*
+    * 
+    */
    private void expand() {
       Interval[] newHeap = new Interval[heap.length * 2];
       System.arraycopy(heap, 0, newHeap, 0, heap.length);
       heap = newHeap;
    }
 
+   /*
+    * 
+    * @param c
+    * @param lastNodeIndex 
+    */
    private void minHeapInsert(Comparable c, int lastNodeIndex) {
 
       int index = lastNodeIndex;
@@ -203,6 +242,11 @@ public class Mwg2DEPQ implements DEPQ {
       size++;
    }
 
+   /*
+    * 
+    * @param c
+    * @param lastNodeIndex 
+    */
    private void maxHeapInsert(Comparable c, int lastNodeIndex) {
 
       int index = lastNodeIndex;
@@ -219,20 +263,22 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    // pseudo code in orange notepad(reverse) page 5
+   /*
+    * 
+    * @param lastNodeIndex 
+    */
    private void fixMinHeap(int lastNodeIndex) {
       int currentNode = 0;
       int smallerChildNode;
       while (currentNode <= lastNodeIndex) {
 
          // compare left and right and swap if left > right
-         if (currentNode < lastNodeIndex) {
-            if (heap[currentNode].getLeft()
-                    .compareTo(heap[currentNode].getRight()) > 0) {
-               // swap
-               Comparable temp = heap[currentNode].getLeft();
-               heap[currentNode].setLeft(heap[currentNode].getRight());
-               heap[currentNode].setRight(temp);
-            }
+         if (heap[currentNode].getLeft()
+                 .compareTo(heap[currentNode].getRight()) > 0) {
+            // swap
+            Comparable temp = heap[currentNode].getLeft();
+            heap[currentNode].setLeft(heap[currentNode].getRight());
+            heap[currentNode].setRight(temp);
          }
 
          // find smaller child
@@ -240,11 +286,14 @@ public class Mwg2DEPQ implements DEPQ {
          int rightChildNode = currentNode * 2 + 2;
 
          // stop if there are no children
-         if (rightChildNode > lastNodeIndex) {
+         if (rightChildNode > lastNodeIndex && heap[leftChildNode] == null) {
             break;
          }
 
-         if (heap[leftChildNode].getLeft()
+         // cover the special case when right child is null
+         if (heap[rightChildNode] == null) {
+            smallerChildNode = leftChildNode;
+         } else if (heap[leftChildNode].getLeft()
                  .compareTo(heap[rightChildNode].getLeft()) <= 0) {
             smallerChildNode = leftChildNode;
          } else {
@@ -266,20 +315,22 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /*
+    * 
+    * @param lastNodeIndex 
+    */
    private void fixMaxHeap(int lastNodeIndex) {
       int currentNode = 0;
       int largerChildNode;
       while (currentNode <= lastNodeIndex) {
 
          // compare left and right and swap if left > right
-         if (currentNode < lastNodeIndex) {
-            if (heap[currentNode].getLeft()
-                    .compareTo(heap[currentNode].getRight()) > 0) {
-               // swap
-               Comparable temp = heap[currentNode].getLeft();
-               heap[currentNode].setLeft(heap[currentNode].getRight());
-               heap[currentNode].setRight(temp);
-            }
+         if (heap[currentNode].getLeft()
+                 .compareTo(heap[currentNode].getRight()) > 0) {
+            // swap
+            Comparable temp = heap[currentNode].getLeft();
+            heap[currentNode].setLeft(heap[currentNode].getRight());
+            heap[currentNode].setRight(temp);
          }
 
          // find smaller child
@@ -287,12 +338,14 @@ public class Mwg2DEPQ implements DEPQ {
          int rightChildNode = currentNode * 2 + 2;
 
          // stop if there are no children
-         if (rightChildNode > lastNodeIndex) {
+         if (rightChildNode > lastNodeIndex && heap[leftChildNode] == null) {
             break;
          }
-         
-         // possible bug place try >=
-         if (heap[leftChildNode].getRight()
+
+         // take care of the special case when right child is null
+         if (heap[rightChildNode] == null) {
+            largerChildNode = leftChildNode;
+         } else if (heap[leftChildNode].getRight()
                  .compareTo(heap[rightChildNode].getRight()) > 0) {
             largerChildNode = leftChildNode;
          } else {
@@ -314,31 +367,65 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
+   /*
+    * Interval represents a single 'node' in the interval heap. It holds the
+    * information about its two children. Left child should typically be smaller
+    * then its right sibling. This should be enforced by the interval heap 
+    * implementation.
+    */
    private class Interval {
 
+      // Left child in the interval
       private Comparable left;
+
+      // Right child in the interval
       private Comparable right;
 
+      /**
+       * Creates a basic interval object with both of its children set to null
+       */
       public Interval() {
       }
 
+      /**
+       * Creates the Interval object which represents a node in the interval heap.
+       *
+       * @param left The left child of the Interval (typically smaller)
+       * @param right The right child of the Interval (typically larger)
+       */
       public Interval(Comparable left, Comparable right) {
          this.left = left;
          this.right = right;
       }
 
+      /**
+       * @return The left child of the Interval
+       */
       public Comparable getLeft() {
          return left;
       }
 
+      /**
+       * @return The right child of the Interval
+       */
       public Comparable getRight() {
          return right;
       }
 
+      /**
+       * Assigns the new value to the left child
+       *
+       * @param left The new value to be assigned
+       */
       public void setLeft(Comparable left) {
          this.left = left;
       }
 
+      /**
+       * Assigns the new value to the right child
+       *
+       * @param right The new value to be assigned
+       */
       public void setRight(Comparable right) {
          this.right = right;
       }
