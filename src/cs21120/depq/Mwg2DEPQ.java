@@ -2,11 +2,15 @@ package cs21120.depq;
 
 /**
  *
- * @author Michal Goly
+ *
+ * @author Michal Goly, mwg2@aber.ac.uk
  */
 public class Mwg2DEPQ implements DEPQ {
 
+   // Internally 
    private Interval[] heap;
+
+   // Number of Comparable objects in the interval heap
    private int size;
 
    /**
@@ -18,8 +22,9 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Returns the smallest element in the DEPQ but does not remove it from the DEPQ
     *
-    * @return
+    * @return returns the smallest element in the DEPQ
     */
    @Override
    public Comparable inspectLeast() {
@@ -32,8 +37,9 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Returns the largest element in the DEPQ but does not remove it from the DEPQ
     *
-    * @return
+    * @return returns the largest element in the DEPQ
     */
    @Override
    public Comparable inspectMost() {
@@ -46,8 +52,47 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Adds an element to the DEPQ.
+    * 
+    * Method firstly checks if the size of the array which is used to store
+    * elements is large enough to accommodate the new one. If it is not, the
+    * expand method will be called to increase the capacity of the queue. Then,
+    * depending on the current size of the queue, the Comparable element will
+    * either be placed in the newly created root Interval (if size was 0), or 
+    * it will be placed in the appropriate position in the root Interval (if size
+    * was 1), otherwise its place has to be calculated.
+    * 
+    * We start by checking if the amount of elements in the queue is odd or even.
+    * 
+    * If it is even, the new node needs to be created and its index has
+    * to be calculated. Then the parent node of that new index has to be determined.
+    * Then, we compare our Comparable element with the smaller element of its parent.
+    * If Comparable is smaller than the smaller element of its parent, we know that
+    * it should be placed somewhere in the min part of the interval heap. Therefore
+    * we call the minHeapInsert method which will bubble the Comparable element into
+    * its proper position, while shifting other elements if necessary. If Comparable
+    * is larger than the smaller element of its parent, we call the maxHeapInsert
+    * method to place the element into its correct position in the max heap part
+    * of the interval heap. Finally, we duplicate the last element in the queue
+    * in order to make other methods easier to implement. 
+    * 
+    * If it is odd, we do not have to create a new node, therefore we simply 
+    * calculate the last element, its parent, determine whether to put it in the 
+    * min or max part of the heap and call either minHeapInsert or maxHeapInsert
+    * appropriately. We do not have to duplicate anything at the end, as the size
+    * after the operation will be even.
     *
-    * @param c
+    * COMPLEXITY ANALYSIS
+    * 
+    * In the best case scenario, the complexity is constant O(1) when the size of 
+    * the queue before the addition is either 0 or 1. Because we only need to 
+    * perform a single operation. In the worst case, we have to go through the whole
+    * heap from bottom to the top. The height of the heap is equal to log(n), where
+    * n is the amount of elements in the heap. Because the complexity of comparing
+    * elements throughout the walk is constant, the worst case complexity of the
+    * add method is O(log n). 
+    * 
+    * @param c The Comparable element to be inserted into the DEPQ
     */
    @Override
    public void add(Comparable c) {
@@ -196,8 +241,9 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Checks if the DEPQ is empty
     *
-    * @return
+    * @return true if the queue is empty, false otherwise
     */
    @Override
    public boolean isEmpty() {
@@ -205,8 +251,9 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Returns the size of the DEPQ
     *
-    * @return
+    * @return The number of Comparable elements currently in the DEPQ
     */
    @Override
    public int size() {
