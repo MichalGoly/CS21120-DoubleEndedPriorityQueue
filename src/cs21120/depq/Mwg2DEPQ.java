@@ -6,65 +6,61 @@ package cs21120.depq;
  * assignment at Aberystwyth University.
  *
  * DEPQ has been implemented using an interval heap which makes it very efficient.
- * Interval heap is similar to a traditional heap, however each node, represented
- * by the Interval inner class, contains two Comparable elements. Left element is
+ * Interval heap is similar to a traditional heap, however each node, represented by
+ * the Interval inner class, contains two Comparable elements. Left element is
  * typically smaller (can be equal to) than the right one. If the total amount of
- * elements in the interval heap is odd, the last Interval will hold a second 
- * 'dummy' element to make the implementation simpler. All left elements in the
- * interval heap define a min heap, whereas all right elements define a max heap.
- * Therefore in the root Interval the left element is the smallest one in the heap
- * and the right one is the largest one in the heap. Internally all elements are
- * stored inside a standard array which can be expanded if necessary. We also keep
- * track of the size using an instance variable.
- * 
+ * elements in the interval heap is odd, the last Interval will hold a second 'dummy'
+ * element to make the implementation simpler. All left elements in the interval heap
+ * define a min heap, whereas all right elements define a max heap. Therefore in the
+ * root Interval the left element is the smallest one in the heap and the right one
+ * is the largest one in the heap. Internally all elements are stored inside a
+ * standard array which can be expanded if necessary. Size is being tracked in an
+ * instance variable.
+ *
  * TIME COMPLEXITY SUMMARY
- * 
+ *
  * Each significant method has an associated complexity analysis in the JavaDoc,
  * however the summary of the efficiency of all methods is presented below.
- * 
- * Method name    | Complexity
- * ---------------+---------------
- * size()         | O(1)
- * isEmpty()      | O(1)
- * inspectLeast() | O(1)
- * inspectMost()  | O(1)
- * add()          | O(log n)
- * getLeast()     | O(log n)
- * getMost()      | O(log n)
- * 
+ *
+ * Method name | Complexity ---------------+--------------- size() | O(1) isEmpty() |
+ * O(1) inspectLeast() | O(1) inspectMost() | O(1) add() | O(log n) getLeast() |
+ * O(log n) getMost() | O(log n)
+ *
  * SOURCES
- * 
+ *
  * In order to understand the concept of an interval heap and the way to implement
  * it, I extensively used this web site:
  * http://www.cise.ufl.edu/~sahni/dsaaj/enrich/c13/double.htm
- * 
- * In order to see how other developers tackled the problem I read through this 
- * web site:
- * http://www.mhhe.com/engcs/compsci/sahni/enrich/c9/interval.pdf
- * 
+ *
+ * In order to see how the other developers tackled the problem I read through this
+ * web site: http://www.mhhe.com/engcs/compsci/sahni/enrich/c9/interval.pdf
+ *
  * SELF EVALUATION
- * 
- * I belive I have met all the marking criteria to receive a mark of around 80%
- * in each part of the assessment. My DEPQ is functioning correctly, has a very
- * high efficiency due to the way it has been implemented. Furthermore, the 
- * documentation is clear an informative and each significant method has an 
- * associated complexity analysis with the summary in the class-wide JavaDoc 
- * comment. Finally, I believe that my code is clean an simple to understand, which
- * means that I would hope to receive an overall mark of around 80% for this 
- * assignment. 
+ *
+ * I belive I have met all the marking criteria to receive a mark of around 80% in
+ * each part of the assessment. My DEPQ is functioning correctly, has a very high
+ * efficiency due to the way it has been implemented. Furthermore, the documentation
+ * is clear an informative and each significant method has an associated complexity
+ * analysis with the summary in the class-wide JavaDoc comment. Finally, I believe
+ * that my code is clean an simple to understand, which means that I would hope to
+ * receive an overall mark of around 80% for this assignment.
  *
  * @author Michal Goly, mwg2@aber.ac.uk
+ * @version 1.0
+ * @since 23/11/2015
  */
 public class Mwg2DEPQ implements DEPQ {
 
-   // Internally 
+   // An array of Intervals which contain two Comparable elements
    private Interval[] heap;
 
    // Number of Comparable objects in the interval heap
    private int size;
 
    /**
-    *
+    * Creates the Mwg2DEPQ which is a double ended priority queue implemented using
+    * an interval heap. This constructor sets the initial size of the queue to 0 and
+    * initialises the empty heap array.
     */
    public Mwg2DEPQ() {
       heap = new Interval[1000];
@@ -74,12 +70,11 @@ public class Mwg2DEPQ implements DEPQ {
    /**
     * Returns the smallest element in the DEPQ but does not remove it from the DEPQ.
     *
-    * COMPLEXITY ANALYSIS 
-    * 
-    * Because we are only interested in the value of the smallest
-    * element, without removing it, we only have to perform a single operation.
-    * Therefore, the time complexity of inspecting the smallest element is constant
-    * O(1).
+    * COMPLEXITY ANALYSIS
+    *
+    * Because we are only interested in the value of the smallest element, without
+    * removing it, we only have to perform a single operation. Therefore, the time
+    * complexity of inspecting the smallest element is constant O(1).
     *
     * @return Either the smallest element in the DEPQ, or null if one does not exist
     */
@@ -96,12 +91,11 @@ public class Mwg2DEPQ implements DEPQ {
    /**
     * Returns the largest element in the DEPQ but does not remove it from the DEPQ.
     *
-    * COMPLEXITY ANALYSIS 
-    * 
-    * Because we are only interested in the value of the largest
-    * element, without removing it, we only have to perform a single operation.
-    * Therefore, the time complexity of inspecting the largest element is constant
-    * O(1).
+    * COMPLEXITY ANALYSIS
+    *
+    * Because we are only interested in the value of the largest element, without
+    * removing it, we only have to perform a single operation. Therefore, the time
+    * complexity of inspecting the largest element is constant O(1).
     *
     * @return Either the largest element in the DEPQ, or null if one does not exist
     */
@@ -213,21 +207,38 @@ public class Mwg2DEPQ implements DEPQ {
     * Removes the smallest element from the DEPQ and returns it.
     *
     * Method firstly checks if the queue is empty and returns null if it is. If the
-    * queue holds only a single element, we return it and set the first Interval
-    * in the heap to null and decrease the size appropriately. Otherwise we calculate
-    * an index of the last Interval in the interval heap and compare it to 0. If 
-    * the last index is equal to 0, it means that the size is 2 and only the root
-    * Interval exists. Therefore we return the left element of the root, which is 
-    * the smallest in the interval heap, assign root.right value to root.left and 
+    * queue holds only a single element, we return it and set the first Interval in
+    * the heap to null and decrease the size appropriately. Otherwise we calculate an
+    * index of the last Interval in the interval heap and compare it to 0. If the
+    * last index is equal to 0, it means that the size is 2 and only the root
+    * Interval exists. Therefore we return the left element of the root, which is the
+    * smallest in the interval heap, assign root.right value to root.left and
     * decrease the size by 1. Finally if none of the above happened, our interval
     * heap holds more than 2 elements which means that we have to return the left
     * element of the root Interval (as it is the smallest in the DEPQ) and fix the
-    * resulting heap. 
-    * 
-    * We start by moving the first 
-    * 
-    * 
-    * 
+    * resulting heap.
+    *
+    * We start by saving the smallest element in the interval heap in a 'result'
+    * variable, to return it back after the heap has been fixed. We then check if the
+    * size of the heap is odd or even. If it is odd, we delete the last node by
+    * setting it to null and decrease the 'size' and 'lastNodeIndex' variables by 1.
+    * If it is even, we duplicate the right element in the last node and put it into
+    * its left sibling, and decrease the 'size' by 1. We do not have to decrease the
+    * last node index as we did not remove it in the first place. Finally, regardless
+    * of whether the size was odd or even, we call the fixMinHeap method with passed
+    * last index parameter. This method will fix the min heap part of the interval
+    * heap and when it finishes, we can return the 'result' back to the caller of the
+    * getLeast method.
+    *
+    * COMPLEXITY ANALYSIS
+    *
+    * Again, the removal itself of the smallest element has a constant complexity
+    * O(1). However, we have to fix the resulting min heap in order to use it again
+    * in the future. In the worst case, fixMinHeap method has to go through the whole
+    * min heap from top to bottom, which has a height of log (n). Because the time
+    * complexity of the comparisons it has to do along the way are constant, the
+    * overall complexity of the getLeast method is O(log n).
+    *
     * @return The smallest element in the DEPQ, or null if queue is empty
     */
    @Override
@@ -274,8 +285,42 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Removes the largest element from the DEPQ and returns it.
     *
-    * @return
+    * Method firstly checks if the queue is empty and returns null if it is. If the
+    * queue holds only a single element, we return it and set the first Interval in
+    * the heap to null and decrease the size appropriately. Otherwise we calculate an
+    * index of the last Interval in the interval heap and compare it to 0. If the
+    * last index is equal to 0, it means that the size is 2 and only the root
+    * Interval exists. Therefore we return the right element of the root, which is
+    * the largest in the interval heap, assign root.left value to root.right and
+    * decrease the size by 1. Finally if none of the above happened, our interval
+    * heap holds more than 2 elements which means that we have to return the right
+    * element of the root Interval (as it is the largest in the DEPQ) and fix the
+    * resulting heap.
+    *
+    * We start by saving the largest element in the interval heap in a 'result'
+    * variable, to return it back after the heap has been fixed. We then check if the
+    * size of the heap is odd or even. If it is odd, we delete the last node by
+    * setting it to null and decrease the 'size' and 'lastNodeIndex' variables by 1.
+    * If it is even, we duplicate the left element in the last node and put it into
+    * its right sibling, and decrease the 'size' by 1. We do not have to decrease the
+    * last node index as we did not remove it in the first place. Finally, regardless
+    * of whether the size was odd or even, we call the fixMaxHeap method with passed
+    * last index parameter. This method will fix the max heap part of the interval
+    * heap and when it finishes, we can return the 'result' back to the caller of the
+    * getMost method.
+    *
+    * COMPLEXITY ANALYSIS
+    *
+    * Again, the removal itself of the largest element has a constant complexity
+    * O(1). However, we have to fix the resulting max heap in order to use it again
+    * in the future. In the worst case, fixMaxHeap method has to go through the whole
+    * max heap from top to bottom, which has a height of log (n). Because the time
+    * complexity of the comparisons it has to do along the way are constant, the
+    * overall complexity of the getMost method is O(log n).
+    *
+    * @return The largest element in the DEPQ, or null if queue is empty
     */
    @Override
    public Comparable getMost() {
@@ -323,9 +368,9 @@ public class Mwg2DEPQ implements DEPQ {
 
    /**
     * Checks if the DEPQ is empty.
-    * 
-    * COMPLEXITY ANALYSIS 
-    * 
+    *
+    * COMPLEXITY ANALYSIS
+    *
     * We simply compare the current size of the queue with 0, which is a single
     * operation with a constant complexity O(1).
     *
@@ -338,11 +383,11 @@ public class Mwg2DEPQ implements DEPQ {
 
    /**
     * Returns the size of the DEPQ.
-    * 
-    * COMPLEXITY ANALYSIS 
-    * 
-    * We only return a single value which means that the time complexity of
-    * this method is constant O(1).
+    *
+    * COMPLEXITY ANALYSIS
+    *
+    * We only return a single value which means that the time complexity of this
+    * method is constant O(1).
     *
     * @return The number of Comparable elements currently in the DEPQ
     */
@@ -406,10 +451,21 @@ public class Mwg2DEPQ implements DEPQ {
       size++;
    }
 
-   // pseudo code in orange notepad(reverse) page 5
    /**
+    * This method will go through the min part of the interval heap and fix it.
     *
-    * @param lastNodeIndex
+    * It starts at the root and compares left and right element to make sure that
+    * smaller element is on the left side. If that is not the case, right and left
+    * elements are swapped. Then the two children of the root node are calculated and
+    * the smaller one is found. Then left element of the root is compared with the
+    * left element of the smaller child. If the left element of the root is larger
+    * than the left element of the child, they will be swapped. Finally the while
+    * loop starts over, but this time the 'currentNode' became the value of the
+    * previously smaller child index (so we effectively moved down the heap). Now the
+    * algorithm will start over and fix the rest of the heap, until the current.left
+    * has no children or their left elements are larger than the current.left.
+    *
+    * @param lastNodeIndex The last index of the Interval(node) in the heap
     */
    private void fixMinHeap(int lastNodeIndex) {
       int currentNode = 0;
@@ -460,6 +516,18 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * This method will go through the max part of the interval heap and fix it.
+    *
+    * It starts at the root and compares left and right element to make sure that
+    * smaller element is on the left side. If that is not the case, right and left
+    * elements are swapped. Then the two children of the root node are calculated and
+    * the larger one is found. Then right element of the root is compared with the
+    * right element of the larger child. If the right element of the root is smaller
+    * than the right element of the child, they will be swapped. Finally the while
+    * loop starts over, but this time the 'currentNode' became the value of the
+    * previously larger child index (so we effectively moved down the heap). Now the
+    * algorithm will start over and fix the rest of the heap, until the current.right
+    * has no children or their right elements are smaller than the current.right.
     *
     * @param lastNodeIndex
     */
