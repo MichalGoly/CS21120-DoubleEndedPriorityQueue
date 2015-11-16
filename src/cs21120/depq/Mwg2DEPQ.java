@@ -1,7 +1,11 @@
 package cs21120.depq;
 
 /**
+ * Mwg2DEPQ is an implementation of the double ended priority queue (DEPQ) interface
+ * provided as part of the CS21100 (Program Design, Data Structures And Algorithms)
+ * module assignment at Aberystwyth University.
  *
+ * DEPQ has been implemented using an interval heap which makes it very efficient.
  *
  * @author Michal Goly, mwg2@aber.ac.uk
  */
@@ -22,9 +26,16 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
-    * Returns the smallest element in the DEPQ but does not remove it from the DEPQ
+    * Returns the smallest element in the DEPQ but does not remove it from the DEPQ.
     *
-    * @return returns the smallest element in the DEPQ
+    * COMPLEXITY ANALYSIS 
+    * 
+    * Because we are only interested in the value of the smallest
+    * element, without removing it, we only have to perform a single operation.
+    * Therefore, the time complexity of inspecting the smallest element is constant
+    * O(1).
+    *
+    * @return Either the smallest element in the DEPQ, or null if one does not exist
     */
    @Override
    public Comparable inspectLeast() {
@@ -37,9 +48,16 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
-    * Returns the largest element in the DEPQ but does not remove it from the DEPQ
+    * Returns the largest element in the DEPQ but does not remove it from the DEPQ.
     *
-    * @return returns the largest element in the DEPQ
+    * COMPLEXITY ANALYSIS 
+    * 
+    * Because we are only interested in the value of the largest
+    * element, without removing it, we only have to perform a single operation.
+    * Therefore, the time complexity of inspecting the largest element is constant
+    * O(1).
+    *
+    * @return Either the largest element in the DEPQ, or null if one does not exist
     */
    @Override
    public Comparable inspectMost() {
@@ -53,45 +71,45 @@ public class Mwg2DEPQ implements DEPQ {
 
    /**
     * Adds an element to the DEPQ.
-    * 
-    * Method firstly checks if the size of the array which is used to store
-    * elements is large enough to accommodate the new one. If it is not, the
-    * expand method will be called to increase the capacity of the queue. Then,
-    * depending on the current size of the queue, the Comparable element will
-    * either be placed in the newly created root Interval (if size was 0), or 
-    * it will be placed in the appropriate position in the root Interval (if size
-    * was 1), otherwise its place has to be calculated.
-    * 
+    *
+    * Method firstly checks if the size of the array which is used to store elements
+    * is large enough to accommodate the new one. If it is not, the expand method
+    * will be called to increase the capacity of the queue. Then, depending on the
+    * current size of the queue, the Comparable element will either be placed in the
+    * newly created root Interval (if size was 0), or it will be placed in the
+    * appropriate position in the root Interval (if size was 1), otherwise its place
+    * has to be calculated.
+    *
     * We start by checking if the amount of elements in the queue is odd or even.
-    * 
-    * If it is even, the new node needs to be created and its index has
-    * to be calculated. Then the parent node of that new index has to be determined.
-    * Then, we compare our Comparable element with the smaller element of its parent.
-    * If Comparable is smaller than the smaller element of its parent, we know that
-    * it should be placed somewhere in the min part of the interval heap. Therefore
-    * we call the minHeapInsert method which will bubble the Comparable element into
-    * its proper position, while shifting other elements if necessary. If Comparable
-    * is larger than the smaller element of its parent, we call the maxHeapInsert
-    * method to place the element into its correct position in the max heap part
-    * of the interval heap. Finally, we duplicate the last element in the queue
-    * in order to make other methods easier to implement. 
-    * 
-    * If it is odd, we do not have to create a new node, therefore we simply 
-    * calculate the last element, its parent, determine whether to put it in the 
-    * min or max part of the heap and call either minHeapInsert or maxHeapInsert
+    *
+    * If it is even, the new node needs to be created and its index has to be
+    * calculated. Then the parent node of that new index has to be determined. Then,
+    * we compare our Comparable element with the smaller element of its parent. If
+    * Comparable is smaller than the smaller element of its parent, we know that it
+    * should be placed somewhere in the min part of the interval heap. Therefore we
+    * call the minHeapInsert method which will bubble the Comparable element into its
+    * proper position, while shifting other elements if necessary. If Comparable is
+    * larger than the smaller element of its parent, we call the maxHeapInsert method
+    * to place the element into its correct position in the max heap part of the
+    * interval heap. Finally, we duplicate the last element in the queue in order to
+    * make other methods easier to implement.
+    *
+    * If it is odd, we do not have to create a new node, therefore we simply
+    * calculate the last element, its parent, determine whether to put it in the min
+    * or max part of the heap and call either minHeapInsert or maxHeapInsert
     * appropriately. We do not have to duplicate anything at the end, as the size
     * after the operation will be even.
     *
     * COMPLEXITY ANALYSIS
-    * 
-    * In the best case scenario, the complexity is constant O(1) when the size of 
-    * the queue before the addition is either 0 or 1. Because we only need to 
-    * perform a single operation. In the worst case, we have to go through the whole
-    * heap from bottom to the top. The height of the heap is equal to log(n), where
-    * n is the amount of elements in the heap. Because the complexity of comparing
-    * elements throughout the walk is constant, the worst case complexity of the
-    * add method is O(log n). 
-    * 
+    *
+    * In the best case scenario, the complexity is constant O(1) when the size of the
+    * queue before the addition is either 0 or 1. Because we only need to perform a
+    * single operation. In the worst case, we have to go through the whole heap from
+    * bottom to the top. The height of the heap is equal to log(n), where n is the
+    * amount of elements in the heap. Because the complexity of comparing elements
+    * throughout the walk is constant, the worst case complexity of the add method is
+    * O(log n).
+    *
     * @param c The Comparable element to be inserted into the DEPQ
     */
    @Override
@@ -146,8 +164,25 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
+    * Removes the smallest element from the DEPQ and returns it.
     *
-    * @return
+    * Method firstly checks if the queue is empty and returns null if it is. If the
+    * queue holds only a single element, we return it and set the first Interval
+    * in the heap to null and decrease the size appropriately. Otherwise we calculate
+    * an index of the last Interval in the interval heap and compare it to 0. If 
+    * the last index is equal to 0, it means that the size is 2 and only the root
+    * Interval exists. Therefore we return the left element of the root, which is 
+    * the smallest in the interval heap, assign root.right value to root.left and 
+    * decrease the size by 1. Finally if none of the above happened, our interval
+    * heap holds more than 2 elements which means that we have to return the left
+    * element of the root Interval (as it is the smallest in the DEPQ) and fix the
+    * resulting heap. 
+    * 
+    * We start by moving the first 
+    * 
+    * 
+    * 
+    * @return The smallest element in the DEPQ, or null if queue is empty
     */
    @Override
    public Comparable getLeast() {
@@ -241,7 +276,12 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
-    * Checks if the DEPQ is empty
+    * Checks if the DEPQ is empty.
+    * 
+    * COMPLEXITY ANALYSIS 
+    * 
+    * We simply compare the current size of the queue with 0, which is a single
+    * operation with a constant complexity O(1).
     *
     * @return true if the queue is empty, false otherwise
     */
@@ -251,7 +291,12 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    /**
-    * Returns the size of the DEPQ
+    * Returns the size of the DEPQ.
+    * 
+    * COMPLEXITY ANALYSIS 
+    * 
+    * We only return a single value which means that the time complexity of
+    * this method is constant O(1).
     *
     * @return The number of Comparable elements currently in the DEPQ
     */
@@ -260,8 +305,8 @@ public class Mwg2DEPQ implements DEPQ {
       return size;
    }
 
-   /*
-    * 
+   /**
+    * This method will expand the capacity of the DEPQ by a factor of 2.
     */
    private void expand() {
       Interval[] newHeap = new Interval[heap.length * 2];
@@ -269,10 +314,13 @@ public class Mwg2DEPQ implements DEPQ {
       heap = newHeap;
    }
 
-   /*
-    * 
-    * @param c
-    * @param lastNodeIndex 
+   /**
+    * This method will bubble up the Comparable element into its proper position
+    * within the min part of the interval heap, while shifting other elements if
+    * necessary. It starts from the bottom and 'goes' upwards.
+    *
+    * @param c The Comparable element to be added into the queue
+    * @param lastNodeIndex Index of the last Interval (node) in the queue
     */
    private void minHeapInsert(Comparable c, int lastNodeIndex) {
 
@@ -289,10 +337,13 @@ public class Mwg2DEPQ implements DEPQ {
       size++;
    }
 
-   /*
-    * 
-    * @param c
-    * @param lastNodeIndex 
+   /**
+    * This method will bubble up the Comparable element into its proper position
+    * within the max part of the interval heap, while shifting other elements if
+    * necessary. It starts from the bottom and 'goes' upwards.
+    *
+    * @param c The Comparable element to be added into the queue
+    * @param lastNodeIndex Index of the last Interval (node) in the queue
     */
    private void maxHeapInsert(Comparable c, int lastNodeIndex) {
 
@@ -310,9 +361,9 @@ public class Mwg2DEPQ implements DEPQ {
    }
 
    // pseudo code in orange notepad(reverse) page 5
-   /*
-    * 
-    * @param lastNodeIndex 
+   /**
+    *
+    * @param lastNodeIndex
     */
    private void fixMinHeap(int lastNodeIndex) {
       int currentNode = 0;
@@ -362,9 +413,9 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
-   /*
-    * 
-    * @param lastNodeIndex 
+   /**
+    *
+    * @param lastNodeIndex
     */
    private void fixMaxHeap(int lastNodeIndex) {
       int currentNode = 0;
@@ -414,11 +465,10 @@ public class Mwg2DEPQ implements DEPQ {
       }
    }
 
-   /*
+   /**
     * Interval represents a single 'node' in the interval heap. It holds the
-    * information about its two children. Left child should typically be smaller
-    * then its right sibling. This should be enforced by the interval heap 
-    * implementation.
+    * information about its two children. Left child should typically be smaller then
+    * its right sibling. This should be enforced by the interval heap implementation.
     */
    private class Interval {
 
