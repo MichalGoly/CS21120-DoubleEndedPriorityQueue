@@ -22,9 +22,15 @@ package cs21120.depq;
  * Each significant method has an associated complexity analysis in the JavaDoc,
  * however the summary of the efficiency of all methods is presented below.
  *
- * Method name | Complexity ---------------+--------------- size() | O(1) isEmpty() |
- * O(1) inspectLeast() | O(1) inspectMost() | O(1) add() | O(log n) getLeast() |
- * O(log n) getMost() | O(log n)
+ * Method name    | Complexity 
+ * ---------------+--------------- 
+ * size()         | O(1) 
+ * isEmpty()      | O(1) 
+ * inspectLeast() | O(1) 
+ * inspectMost()  | O(1) 
+ * add()          | O(log n) 
+ * getLeast()     | O(log n) 
+ * getMost()      | O(log n)
  *
  * SOURCES
  *
