@@ -39,7 +39,8 @@ package cs21120.depq;
  * http://www.cise.ufl.edu/~sahni/dsaaj/enrich/c13/double.htm
  *
  * In order to see how the other developers tackled the problem I read through this
- * web site: http://www.mhhe.com/engcs/compsci/sahni/enrich/c9/interval.pdf
+ * web site:
+ * http://www.mhhe.com/engcs/compsci/sahni/enrich/c9/interval.pdf
  *
  * SELF EVALUATION
  *
